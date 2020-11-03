@@ -1,0 +1,7 @@
+---
+- name: Web01
+  hosts: all
+  gather_facts: yes
+  become: true
+  roles:
+    - hello_web
