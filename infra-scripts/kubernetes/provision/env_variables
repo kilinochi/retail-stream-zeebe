@@ -5,6 +5,7 @@ packages:
 - docker
 - kubeadm
 - kubectl
+- kubelet
 
 services:
 - docker
