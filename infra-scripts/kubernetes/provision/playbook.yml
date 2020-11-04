@@ -18,12 +18,12 @@
 
     - name: Creating a repository file for Kubernetes
       file:
-        path: /etc/dnf.repos.d/kubernetes.repo
+        path: /etc/dnf/kubernetes.repo
         state: touch
 
     - name: Adding repository details in Kubernetes repo file.
       blockinfile:
-        path: /etc/dnf.repos.d/kubernetes.repo
+        path: /etc/dnf/kubernetes.repo
         block: |
           [kubernetes]
           name=Kubernetes
