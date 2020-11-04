@@ -1,26 +1,26 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 boxes = [
-  { :name => :master01, :ip => '192.168.33.101'},
+  { :name => :k8sMaster1, :ip => '192.168.33.101'},
+  { :name => :k8sNode1, :ip => '192.168.33.102'},
 ]
-
-ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
 
 Vagrant.configure("2") do |config|
 
   boxes.each do |opts|
     config.vm.define opts[:name] do |machine|
-      machine.vm.box = "fedora/31-cloud-base"
+      machine.vm.box = "bento/ubuntu-20.04"
       machine.vm.network "private_network", ip: opts[:ip]
+      machine.vm.hostname = opts[:name]
+      config.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "1024"]
+        vb.cpus = 2
+      end
       config.ssh.forward_agent = true
       config.ssh.insert_key = false
-      config.vm.provider :virtualbox do |vb|
-        vb.customize ["modifyvm", :id, "--memory", "2048"]
-      end
       config.ssh.insert_key = false
       config.ssh.private_key_path = ['~/.vagrant.d/insecure_private_key', '~/.ssh/id_rsa']
       config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
-
       config.vm.provision "shell", inline: <<-EOC
           sudo sed -i -e "\\#PasswordAuthentication yes# s#PasswordAuthentication yes#PasswordAuthentication no#g" /etc/ssh/sshd_config
           sudo systemctl restart sshd.service
