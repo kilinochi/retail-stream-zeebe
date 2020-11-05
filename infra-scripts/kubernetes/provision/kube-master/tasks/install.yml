@@ -1,0 +1,12 @@
+---
+- name: Initializate cluster
+  command: kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address "192.168.33.101"
+
+- name: Copy admin conf
+  block:
+      - copy:
+          src: /etc/kubernetes/admin.conf
+          remote_src: true
+          dest: "{{ ansible_env.HOME }}"
+          owner: "{{ ansible_env.USER }}"
+          group: "{{ ansible_env.USER }}"

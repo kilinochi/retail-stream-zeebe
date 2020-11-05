@@ -1,0 +1,4 @@
+---
+- name: "has installed kube master"
+  become: true
+  include: install.yml
