@@ -26,6 +26,9 @@
     chdir: $HOME
     creates: pod_network_setup.txt
 
+- name: install Dashboard
+  shell: "kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml"
+
 - name: get join command
   shell: "kubeadm token create --print-join-command"
   register: join_command_raw
