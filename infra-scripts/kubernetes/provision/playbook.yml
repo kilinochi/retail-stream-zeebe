@@ -21,15 +21,18 @@
 
 - name: kube-init
   hosts: all
+  become: true
   roles:
     - kube-init
 
 - name: master-init
   hosts: k8s-master
+  become: true
   roles:
     - kube-master
 
 - name: nodes-int
   hosts: k8s-node
+  become: true
   roles:
     - kube-node

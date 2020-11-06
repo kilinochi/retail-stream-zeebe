@@ -20,19 +20,44 @@
     remote_src: yes
     owner: vagrant
 
+- name: chown kube dir
+  file:
+    path: /home/vagrant/.kube/config
+    owner: "{{ ansible_effective_user_id }}"
+    group: "{{ ansible_effective_group_id }}"
+
 - name: install Pod network
-  shell: "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml >> pod_network_setup.txt"
+  shell: "kubectl -n kube-system apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml >> pod_network_setup.txt"
   args:
-    chdir: $HOME
     creates: pod_network_setup.txt
+  environment:
+    KUBECONFIG: "/home/vagrant/.kube/config"
 
 - name: install Dashboard
   shell: "kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml"
+  environment:
+    KUBECONFIG: "/home/vagrant/.kube/config"
 
-- name: get join command
-  shell: "kubeadm token create --print-join-command"
-  register: join_command_raw
+- name: curl helm
+  shell: "curl https://baltocdn.com/helm/signing.asc | sudo apt-key add - "
+  args:
+    warn: no
 
-- name: set join command
-  set_fact:
-    join_command: "{{ join_command_raw.stdout_lines[0] }}"
+- name: install apt-transport-https
+  apt:
+    force: yes
+    name: apt-transport-https
+    state: present
+
+- name: baltocdn all main
+  shell: "echo \"deb https://baltocdn.com/helm/stable/debian/ all main\" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list"
+
+- name: Update Cache
+  apt: update_cache=yes
+
+- name: install helm
+  apt:
+    force: yes
+    name: helm
+    state: present
+

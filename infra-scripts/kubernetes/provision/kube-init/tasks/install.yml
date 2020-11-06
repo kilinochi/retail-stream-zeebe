@@ -27,8 +27,16 @@
 - name: Install container runtime
   apt:
     force: yes
-    name: docker-ce
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
     state: present
+
+- name: Add vagrant user to docker group
+    user:
+      name: vagrant
+      group: docker
 
 - name: Install kubelet kubeadm kubectl
   apt:
