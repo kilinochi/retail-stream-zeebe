@@ -34,9 +34,9 @@
     state: present
 
 - name: Add vagrant user to docker group
-    user:
-      name: vagrant
-      group: docker
+  user:
+    name: vagrant
+    group: docker
 
 - name: Install kubelet kubeadm kubectl
   apt:
