@@ -34,19 +34,16 @@
   environment:
     KUBECONFIG: "/home/vagrant/.kube/config"
 
-- name: curl helm
+- name: Curl helm
   shell: "curl https://baltocdn.com/helm/signing.asc | sudo apt-key add - "
   args:
     warn: no
 
-- name: install apt-transport-https
+- name: Install apt-transport-https
   apt:
     force: yes
     name: apt-transport-https
     state: present
-
-- name: baltocdn all main
-  shell: "echo \"deb https://baltocdn.com/helm/stable/debian/ all main\" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list"
 
 - name: Update Cache
   apt: update_cache=yes
@@ -70,14 +67,13 @@
     mode: 777
     state: touch
 
-
 - name: Generate join command
   shell: "kubeadm token create --print-join-command | tee /home/vagrant/join_command.txt"
   register: join_command_raw
 
-- name: Copy join command to local file
-  become: false
-  local_action: copy content="{{ join_command_raw.stdout_lines[0] }}" dest="./join-command"
+#- name: Copy join command to local file
+#  become: false
+#  local_action: copy content="{{ join_command_raw.stdout_lines[0] }}" dest="./join-command"
 
 - name: Set join command
   set_fact:
