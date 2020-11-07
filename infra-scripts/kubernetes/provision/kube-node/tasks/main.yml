@@ -1,5 +1,0 @@
----
-- name: "has installed kube nodes"
-  become: true
-  include: install.yml
-# tasks file for provision/kube-node

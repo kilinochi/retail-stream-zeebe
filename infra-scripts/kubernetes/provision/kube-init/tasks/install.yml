@@ -1,8 +1,4 @@
 ---
-- name: include_vars
-  include_vars:
-    file: vars.yml
-
 #- name: Pick IP from the same network as master
 #  set_fact: hostip="{{ ansible_all_ipv4_addresses|ipaddr(master_ip) }}"
 
@@ -60,7 +56,14 @@
     - command: sysctl net.bridge.bridge-nf-call-iptables=1
     - command: sysctl net.bridge.bridge-nf-call-ip6tables=1
 
-- name: Create /etc/default/kubelet with extra args
-  template:
-    src: kubelet.j2
-    dest: /etc/default/kubelet
+- name: Configure node ip
+  lineinfile:
+    create: yes
+    path: /etc/default/kubelet
+    line: KUBELET_EXTRA_ARGS=--node-ip={{ ansible_host }}
+
+- name: Restart kubelet
+  service:
+    name: kubelet
+    daemon_reload: yes
+    state: restarted
