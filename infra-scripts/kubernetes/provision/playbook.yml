@@ -30,27 +30,3 @@
   become: true
   roles:
     - master-cfg
-
-- name: Restart kubelet
-  hosts: all
-  tasks:
-    - name: Restart processing
-      service:
-        name: kubelet
-        daemon_reload: yes
-        state: restarted
-
-- name: config workers
-  hosts: k8s-node
-  become: true
-  tasks:
-    - name: Copy the join command to server location
-      copy:
-        src: join-command
-        dest: /tmp/join-command.sh mode=0777
-        remote_src: yes
-        owner: vagrant
-        mode: 0777
-
-    - name: Join the node to cluster
-      command: sh /tmp/join-command.sh
