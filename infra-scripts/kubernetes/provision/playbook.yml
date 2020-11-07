@@ -25,6 +25,7 @@
   become: true
   roles:
     - master-cfg
+
 - name: node-cfg
   hosts: k8s-node
   become: true

@@ -1,2 +1,6 @@
 ---
--
+- name: Join cluster
+  shell: "{{ hostvars['k8sMaster1'].join_command }} >> node_joined.txt"
+  args:
+    chdir: $HOME
+    creates: node_joined.txt
