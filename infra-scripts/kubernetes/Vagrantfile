@@ -1,8 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 boxes = [
-  { :name => :k8sMaster1, :ip => '192.168.33.101'},
-  { :name => :k8sNode1, :ip => '192.168.33.102'},
+  { :name => :k8sMaster1, :ip => '192.168.50.101'},
+  { :name => :k8sNode1, :ip => '192.168.50.102'},
 ]
 
 Vagrant.configure("2") do |config|

@@ -14,11 +14,6 @@
         regexp: '(.*swap*)'
         replace: '#\1'
 
-    - name: install pip
-      apt:
-        name: python-pip
-        state: present
-
 - name: kube-init
   hosts: all
   become: true
@@ -30,3 +25,8 @@
   become: true
   roles:
     - master-cfg
+- name: node-cfg
+  hosts: k8s-node
+  become: true
+  roles:
+    - node-cfg

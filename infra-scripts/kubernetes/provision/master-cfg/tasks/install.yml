@@ -1,9 +1,11 @@
 ---
+- name: Reset kubeadm
+  shell: "kubeadm reset --force"
+
 - name: Initializate cluster
-  command: kubeadm init --apiserver-advertise-address="192.168.33.101" --apiserver-cert-extra-sans="192.168.33.101"  --node-name k8s-master --pod-network-cidr=192.168.0.0/16
-  args:
-    chdir: $HOME
-    creates: cluster_init.txt
+  command: kubeadm init --apiserver-advertise-address="192.168.50.101" --apiserver-cert-extra-sans="192.168.50.101"  --node-name k8s-master --pod-network-cidr=192.168.0.0/16
+  register: master_initialization
+  run_once: true
 
 - name: create .kube directory
   become_user: vagrant
@@ -62,9 +64,17 @@
     KUBECONFIG: "/home/vagrant/.kube/config"
 
 - name: Generate join command
-  command: kubeadm token create --print-join-command
+  shell: "kubeadm token create --print-join-command >> | tee ~./join_command.txt"
   register: join_command
 
 - name: Copy join command to local file
   become: false
   local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
+
+- name: Push Join cluster file to nodes
+  synchronize:
+    src: ~./join_command.txt
+    dest: ~./join_command.sh
+    mode: push
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['k8s-node'] }}"
