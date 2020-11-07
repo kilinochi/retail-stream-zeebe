@@ -48,7 +48,7 @@
 - name: Update Cache
   apt: update_cache=yes
 
-- name: install helm
+- name: Install helm
   apt:
     force: yes
     name: helm
