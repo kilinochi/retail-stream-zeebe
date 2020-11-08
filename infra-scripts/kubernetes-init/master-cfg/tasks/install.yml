@@ -7,7 +7,7 @@
   register: master_initialization
   run_once: true
 
-- name: create .kube directory
+- name: Create .kube directory
   become_user: vagrant
   file:
     remote_src: yes
@@ -22,14 +22,14 @@
     remote_src: yes
     owner: vagrant
 
-- name: install Pod network
+- name: Install Pod network
   shell: "kubectl -n kube-system apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml >> pod_network_setup.txt"
   args:
     creates: pod_network_setup.txt
   environment:
     KUBECONFIG: "/home/vagrant/.kube/config"
 
-- name: install Dashboard
+- name: Install Dashboard
   shell: "kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml"
   environment:
     KUBECONFIG: "/home/vagrant/.kube/config"
@@ -44,6 +44,16 @@
     force: yes
     name: apt-transport-https
     state: present
+
+- name: Create helm source list
+  become_user: root
+  file:
+    path: /etc/apt/sources.list.d/helm-stable-debian.list
+    state: touch
+    mode: 0755
+
+- name: Configurate helm source list
+  shell: "echo \"deb https://baltocdn.com/helm/stable/debian/ all main\" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list"
 
 - name: Update Cache
   apt: update_cache=yes
