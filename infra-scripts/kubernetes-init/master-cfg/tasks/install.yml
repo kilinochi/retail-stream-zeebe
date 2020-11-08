@@ -50,6 +50,10 @@
   shell: "./get_helm.sh"
   register: helm_script_output
 
+- name: Stable charts version
+  become_user: vagrant
+  command: helm repo add stable https://charts.helm.sh/stable
+
 - name: Show helm script
   debug:
     msg: "{{ helm_script_output.stdout_lines }}"
