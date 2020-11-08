@@ -16,7 +16,8 @@
     warn: no
 
 - name: Install incubator kafka
-  command: helm install kafka incubator/kafka -f values.yml --debug
+  become_user: vagrant
+  command: helm install --name kafka-cluster --namespace kafka incubator/kafka -f values.yaml
   environment:
     KUBECONFIG: "/home/vagrant/.kube/config"
 
