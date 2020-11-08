@@ -1,0 +1,6 @@
+---
+- name: Kafka cluster init
+  hosts: k8s-master
+  become: true
+  roles:
+    - kafka-init

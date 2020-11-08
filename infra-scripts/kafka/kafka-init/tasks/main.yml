@@ -1,0 +1,22 @@
+---
+- name: Add incubator helm repository
+  become_user: vagrant
+  command: helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+
+- name: Create configuration file
+  become_user: vagrant
+  file:
+    path: /home/vagrant/values.yaml
+    mode: 777
+    state: touch
+
+- name: Curl configuration file and write to disk
+  shell: "curl https://raw.githubusercontent.com/helm/charts/master/incubator/kafka/values.yaml | tee values.yaml"
+  args:
+    warn: no
+
+- name: Install incubator kafka
+  command: helm install kafka incubator/kafka -f values.yml --debug
+  environment:
+    KUBECONFIG: "/home/vagrant/.kube/config"
+

@@ -59,10 +59,60 @@
   apt: update_cache=yes
 
 - name: Install helm
-  apt:
-    force: yes
-    name: helm
-    state: present
+  shell: "curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > install-helm.sh"
+  args:
+    warn: no
+
+- name: Change permission for helm .sh
+  become_user: root
+  #win_owner: vagrant
+  file:
+    dest: install-helm.sh
+    mode: 755
+    owner: vagrant
+
+- name: Execute helm script
+  shell: "sudo ./install-helm.sh"
+
+- name: Define ServiceAccount name for Tiller
+  set_fact:
+    tiller_service_account_name: "tiller"
+
+- name: Install Tiller
+  shell: "helm init --service-account {{ tiller_service_account_name }}"
+  register: helm_init_result
+  become_user: vagrant
+  environment:
+    KUBECONFIG: "/home/vagrant/.kube/config"
+
+- name: Show helm init result
+  debug:
+    msg: "{{ helm_init_result.stdout_lines }}"
+
+- name: Tiller upgrade
+  command: helm init --upgrade
+  environment:
+    KUBECONFIG: "/home/vagrant/.kube/config"
+
+#- name: Create the tiller service account
+#  command: kubectl -n kube-system create serviceaccount tiller
+#  environment:
+#    KUBECONFIG: "/home/vagrant/.kube/config"
+
+#- name: Bind the tiller serviceaccount to the cluster-admin role
+#  command: kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+#  environment:
+#    KUBECONFIG: "/home/vagrant/.kube/config"
+
+#- name: Deploy tiller
+#  command:
+#  environment:
+#    KUBECONFIG: "/home/vagrant/.kube/config"
+
+# name: Describe pod tiller-deploy
+#  command: kubectl describe pod tiller-deploy -n kube-system
+#  environment:
+#    KUBECONFIG: "/home/vagrant/.kube/config"
 
 - name: Install calico pod network
   become: false
