@@ -1,4 +1,5 @@
 *.vagrant
 *.log
 *.retry
-/kubernetes/provision/join-command
+/kubernetes-init/provision/join-command
+/.idea/
