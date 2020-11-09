@@ -3,25 +3,19 @@
   become_user: vagrant
   command: helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 
-#- name: Create configuration file
-#  become_user: vagrant
-#  file:
-#    path: /home/vagrant/values.yaml
-#    mode: 777
-#    state: touch
-
-#- name: Curl configuration file and write to disk
-#  shell: "curl https://raw.githubusercontent.com/helm/charts/master/incubator/kafka/values.yaml | tee values.yaml"
-#  args:
-#    warn: no
-
 - name: Add bitnami helm repository
   become_user: vagrant
   command: helm repo add bitnami https://charts.bitnami.com/bitnami
 
+- name: Install bitnami zookeeper
+  become_user: vagrant
+  command: helm install zookeeper bitnami/zookeeper --set replicaCount=2 --set auth.enabled=false --set allowAnonymousLogin=true
+  environment:
+    KUBECONFIG: "/home/vagrant/.kube/config"
+
 - name: Install bitnami kafka
   become_user: vagrant
-  command: helm install kafka --namespace default bitnami/kafka
+  command: helm install kafka bitnami/kafka --set zookeeper.enabled=false --set replicaCount=2 --set externalZookeeper.servers=zookeeper
   environment:
     KUBECONFIG: "/home/vagrant/.kube/config"
 
