@@ -3,7 +3,7 @@ version: "3.5"
 services:
   zeebe:
     container_name: zeebe
-    image: camunda/zeebe:0.24.1
+    image: camunda/zeebe:0.26.0
     hostname: zeebe
     environment:
       SPRING_CONFIG_ADDITIONAL_LOCATION: /usr/local/zeebe/config/application.yml
@@ -99,6 +99,7 @@ services:
       KAFKA_CREATE_TOPICS_SEPARATOR: "$$'\n'"
       KAFKA_CREATE_TOPICS: |
         zeebe-collector:1:1
+        zeebe-variables:1:1
     depends_on:
       - zookeeper
     links:

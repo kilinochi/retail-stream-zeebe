@@ -154,7 +154,7 @@ zeebe:
             # For records with a value of type DEPLOYMENT
             deployment: { topic: zeebe-collector }
             # For records with a value of type INCIDENT
-            incident = { topic: zeebe-collector }
+            incident: { topic: zeebe-collector }
             # For records with a value of type JOB_BATCH
             jobBatch: { topic: zeebe-collector }
             # For records with a value of type JOB
@@ -168,7 +168,7 @@ zeebe:
             # For records with a value of type TIMER
             timer: { topic: zeebe-collector }
             # For records with a value of type VARIABLE
-            variable: { topic: zeebe-collector }
+            variable: { topic: zeebe-variables }
             # For records with a value of type WORKFLOW_INSTANCE
             workflowInstance: { topic: zeebe-collector }
             # For records with a value of type WORKFLOW_INSTANCE_RESULT
